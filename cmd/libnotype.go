@@ -72,7 +72,7 @@ func listBooks() func(*library.Library) error {
 			fmt.Println("Your library is empty.")
 		}
 		for _, book := range books {
-			fmt.Println("- %v", book.Name)
+			fmt.Printf("- %v\n", book.Name)
 		}
 		return nil
 	}
