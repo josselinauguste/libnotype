@@ -18,9 +18,7 @@ func (l Library) AddBook(bookPath string) error {
 }
 
 func (l Library) ListBooks() ([]Book, error) {
-	files, err := filesystem.SelectFiles(l.path, func(file os.FileInfo) bool {
-		return filesystem.HasExtension(file, ".pdf")
-	})
+	files, err := filesystem.SelectFiles(l.path, bookPredicate)
 	if err != nil {
 		return  nil, err
 	}
@@ -30,6 +28,11 @@ func (l Library) ListBooks() ([]Book, error) {
 		books = append(books, *book)
 	}
 	return  books, err
+}
+
+func bookPredicate(file os.FileInfo) bool {
+	extensions := []string{".pdf", ".epub"}
+	return filesystem.HasExtension(file, extensions)
 }
 
 type Book struct {

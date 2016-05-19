@@ -27,17 +27,29 @@ func CopyFile(dstFolder, src string) error {
 	return cerr
 }
 
-func HasExtension(file os.FileInfo, extension string) bool {
-	return path.Ext(file.Name()) == extension
+func HasExtension(file os.FileInfo, extensions []string) bool {
+	for _, extension := range extensions {
+		if path.Ext(file.Name()) == extension {
+			return true
+		}
+	}
+	return false
 }
 
-func SelectFiles(path string, predicate func(os.FileInfo) bool) ([]os.FileInfo, error) {
-	files, err := ioutil.ReadDir(path)
+func SelectFiles(folderPath string, predicate func(os.FileInfo) bool) ([]os.FileInfo, error) {
+	files, err := ioutil.ReadDir(folderPath)
 	if err != nil {
 		return  nil, err
 	}
 	selectedFiles := make([]os.FileInfo, 0)
 	for _, file := range files {
+		if file.Mode().IsDir() {
+			innerFiles, err := SelectFiles(path.Join(folderPath, file.Name()), predicate)
+			if err != nil {
+				return  nil, err
+			}
+			selectedFiles = append(selectedFiles, innerFiles...)
+		}
 		if file.Mode().IsRegular() && predicate(file) {
 			selectedFiles = append(selectedFiles, file)
 		}
