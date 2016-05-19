@@ -7,10 +7,17 @@ import (
 
 	"github.com/go-ini/ini"
 	"github.com/josselinauguste/libnotype/library"
+	"os/user"
+	"path"
 )
 
 func main() {
-	configuration, err := ini.Load("~/.libnotype")
+	usr, err := user.Current()
+	if err != nil {
+		fmt.Printf("%v\n", err)
+	}
+	configurationFile := path.Join(usr.HomeDir, ".libnotype")
+	configuration, err := ini.Load(configurationFile)
 	if err != nil {
 		fmt.Printf("Error: %v\n", err)
 		os.Exit(2)
