@@ -1,9 +1,8 @@
 package library
 
 import (
-	"io"
+	"github.com/josselinauguste/libnotype/filesystem"
 	"os"
-	"path"
 )
 
 type Library struct {
@@ -15,25 +14,28 @@ func New(path string) *Library {
 }
 
 func (l Library) AddBook(bookPath string) error {
-	return copyFile(l.path, bookPath)
+	return filesystem.CopyFile(l.path, bookPath)
 }
 
-func copyFile(dstFolder, src string) error {
-	in, err := os.Open(src)
+func (l Library) ListBooks() ([]Book, error) {
+	files, err := filesystem.SelectFiles(l.path, func(file os.FileInfo) bool {
+		return filesystem.HasExtension(file, ".pdf")
+	})
 	if err != nil {
-		return err
+		return  nil, err
 	}
-	defer in.Close()
-	dst := path.Join(dstFolder, path.Base(src))
-	out, err := os.Create(dst)
-	if err != nil {
-		return err
+	books := make([]Book, 0)
+	for _, file := range files {
+		book := NewBook(file.Name())
+		books = append(books, *book)
 	}
-	defer out.Close()
-	_, err = io.Copy(out, in)
-	cerr := out.Close()
-	if err != nil {
-		return err
-	}
-	return cerr
+	return  books, err
+}
+
+type Book struct {
+	Name string
+}
+
+func NewBook(name string) *Book {
+	return &Book{name}
 }

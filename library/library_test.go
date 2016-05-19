@@ -19,6 +19,20 @@ func TestAddBookToLibrary(t *testing.T) {
 	}
 }
 
+func TestList(t *testing.T) {
+	library := New(testPath(""))
+	library.AddBook(getTestPDF())
+
+	books, err := library.ListBooks()
+
+	if err != nil {
+		t.Errorf("Unexpected error: %v", err)
+	}
+	if len(books) == 0 {
+		t.Errorf("Books length expected to be %v, found %v", 1, len(books))
+	}
+}
+
 func getTestPDF() string {
 	currentPath, _ := os.Getwd()
 	return path.Join(currentPath, "book.pdf")
