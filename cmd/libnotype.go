@@ -46,11 +46,15 @@ func parseCommand(args []string) (func(*library.Library) error, error) {
 	}
 	if args[0] == "add" {
 		if len(args) > 1 {
-			return func(library *library.Library) error {
-				return library.AddBook(args[1])
-			}, nil
+			return addBook(args[1]), nil
 		}
 		return nil, errors.New("Missing <library> argument")
 	}
 	return nil, errors.New("Unknown command")
+}
+
+func addBook(filePath string) func(*library.Library) error {
+	return func(library *library.Library) error {
+		return library.AddBook(filePath)
+	}
 }
