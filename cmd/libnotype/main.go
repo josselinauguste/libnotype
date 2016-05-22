@@ -5,10 +5,11 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/go-ini/ini"
-	"github.com/josselinauguste/libnotype/library"
 	"os/user"
 	"path"
+
+	"github.com/go-ini/ini"
+	"github.com/josselinauguste/libnotype/library"
 )
 
 func main() {
@@ -66,7 +67,7 @@ func listBooks() func(*library.Library) error {
 	return func(library *library.Library) error {
 		books, err := library.ListBooks()
 		if err != nil {
-			return  err
+			return err
 		}
 		if len(books) == 0 {
 			fmt.Println("Your library is empty.")
