@@ -1,8 +1,9 @@
 package library
 
 import (
-	"github.com/josselinauguste/libnotype/filesystem"
 	"os"
+
+	"github.com/josselinauguste/libnotype/filesystem"
 )
 
 type Library struct {
@@ -20,14 +21,14 @@ func (l Library) AddBook(bookPath string) error {
 func (l Library) ListBooks() ([]Book, error) {
 	files, err := filesystem.SelectFiles(l.path, bookPredicate)
 	if err != nil {
-		return  nil, err
+		return nil, err
 	}
-	books := make([]Book, 0)
+	var books []Book
 	for _, file := range files {
 		book := NewBook(file.Name())
 		books = append(books, *book)
 	}
-	return  books, err
+	return books, err
 }
 
 func bookPredicate(file os.FileInfo) bool {
