@@ -48,13 +48,13 @@ func parseCommand(args []string) (func(*library.Library) error, error) {
 
 func addBook(filePath string) func(*library.Library) error {
 	return func(library *library.Library) error {
-		return library.AddBook(filePath)
+		return library.AddFromFile(filePath)
 	}
 }
 
 func listBooks() func(*library.Library) error {
 	return func(library *library.Library) error {
-		books, err := library.ListBooks()
+		books, err := library.List()
 		if err != nil {
 			return err
 		}

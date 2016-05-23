@@ -9,7 +9,7 @@ import (
 func TestAddBookToLibrary(t *testing.T) {
 	library := New(testPath(""))
 
-	err := library.AddBook(getTestPDF())
+	err := library.AddFromFile(getTestPDF())
 
 	if err != nil {
 		t.Errorf("Unexpected error: %v", err)
@@ -22,7 +22,7 @@ func TestAddBookToLibrary(t *testing.T) {
 func TestList(t *testing.T) {
 	library := New(getFixturesPath())
 
-	books, err := library.ListBooks()
+	books, err := library.List()
 
 	if err != nil {
 		t.Errorf("Unexpected error: %v", err)

@@ -14,11 +14,11 @@ func New(path string) *Library {
 	return &Library{path}
 }
 
-func (l Library) AddBook(bookPath string) error {
+func (l Library) AddFromFile(bookPath string) error {
 	return filesystem.CopyFile(l.path, bookPath)
 }
 
-func (l Library) ListBooks() ([]Book, error) {
+func (l Library) List() ([]Book, error) {
 	files, err := filesystem.SelectFiles(l.path, bookPredicate)
 	if err != nil {
 		return nil, err
