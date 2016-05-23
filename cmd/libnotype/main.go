@@ -4,36 +4,25 @@ import (
 	"errors"
 	"fmt"
 	"os"
-
 	"os/user"
 	"path"
 
-	"github.com/go-ini/ini"
+	"github.com/josselinauguste/libnotype/configuration"
 	"github.com/josselinauguste/libnotype/library"
 )
 
 func main() {
-	usr, err := user.Current()
-	if err != nil {
-		fmt.Printf("%v\n", err)
-	}
-	configurationFile := path.Join(usr.HomeDir, ".libnotype")
-	configuration, err := ini.Load(configurationFile)
-	if err != nil {
-		fmt.Printf("Error: %v\n", err)
-		os.Exit(2)
-	}
-	libraryPath, err := configuration.Section("").GetKey("library_path")
-	if err != nil {
-		fmt.Printf("Error: %v\n", err)
-		os.Exit(3)
-	}
-	library := library.New(libraryPath.String())
 	command, err := parseCommand(os.Args[1:])
 	if err != nil {
 		fmt.Printf("Error: %v\n", err)
 		os.Exit(1)
 	}
+	configuration, err := configuration.ParseConfigurationFile(getConfigurationFileName())
+	if err != nil {
+		fmt.Printf("Error: %v\n", err)
+		os.Exit(2)
+	}
+	library := library.New(configuration.LibraryPath)
 	err = command(library)
 	if err != nil {
 		fmt.Printf("Error: %v\n", err)
@@ -77,4 +66,13 @@ func listBooks() func(*library.Library) error {
 		}
 		return nil
 	}
+}
+
+func getConfigurationFileName() string {
+	usr, err := user.Current()
+	if err != nil {
+		fmt.Printf("%v\n", err)
+		os.Exit(1)
+	}
+	return path.Join(usr.HomeDir, ".libnotype")
 }
