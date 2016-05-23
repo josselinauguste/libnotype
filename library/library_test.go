@@ -32,6 +32,34 @@ func TestList(t *testing.T) {
 	}
 }
 
+func TestContainsBook(t *testing.T) {
+	library := New(getFixturesPath())
+	list, _ := library.List()
+	book := list[0]
+
+	r, err := library.Contains(book)
+
+	if err != nil {
+		t.Errorf("Unexpected error: %v", err)
+	}
+	if !r {
+		t.Errorf("Expected book to be contained")
+	}
+}
+
+func TestDoesNotContainBook(t *testing.T) {
+	library := New(getFixturesPath())
+
+	r, err := library.Contains(*NewBook("hello"))
+
+	if err != nil {
+		t.Errorf("Unexpected error: %v", err)
+	}
+	if r {
+		t.Errorf("Expected book to not be contained")
+	}
+}
+
 func getTestPDF() string {
 	return path.Join(getFixturesPath(), "book.pdf")
 }

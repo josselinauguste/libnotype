@@ -31,6 +31,19 @@ func (l Library) List() ([]Book, error) {
 	return books, err
 }
 
+func (l Library) Contains(searchedBook Book) (bool, error) {
+	list, err := l.List()
+	if err != nil {
+		return false, err
+	}
+	for _, book := range list {
+		if book == searchedBook {
+			return true, nil
+		}
+	}
+	return false, nil
+}
+
 func bookPredicate(file os.FileInfo) bool {
 	extensions := []string{".pdf", ".epub"}
 	return filesystem.HasExtension(file, extensions)
